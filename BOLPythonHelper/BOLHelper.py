@@ -8,6 +8,35 @@ import os
 import platform
 import urllib3
 
+from enum import Enum
+
+class Languages(Enum):
+    NotDefined = 0
+    CSharp = 1
+    Java = 2
+    Python = 3
+    Php = 4
+    C = 5
+    Cplusplus = 6 
+    VB6 = 7
+    VBNet = 8
+    Javascript = 9 
+    Swift = 10 
+    Ruby = 11
+    Perl = 12
+    Delphi = 13
+
+
+class AppTypes(Enum):
+    NotDefined = 0
+    Mobile = 1
+    WebApp = 2
+    Desktop = 3
+    IoT = 4
+    WepApi = 5
+    Console = 6
+
+
 class BOLBug(object):
     """class that represent a bug"""
 
@@ -16,34 +45,60 @@ class BOLBug(object):
         self.AppVersion= ""
         self.MachineName= ""
         self.Token= ""
+
         self.ErrNumber= 0
         self.Description= ""
         self.StackTrace= ""
+        self.BugDate = datetime.datetime.now
+
         self.Routine= ""
         self.OS= ""
         self.OSVersion= ""
+
+        self.Language = Languages.NotDefined
+        self.AppType = AppTypes.NotDefined
+
+        self.Things = {}
 
 class BOLHelper(object):
     """description of class"""
     __instance = None
     __username = ""
     __password = ""
+    __appname = ""
+    __appversion = ""
+    __apptype = AppTypes.NotDefined
+    __language = Languages.NotDefined
+
 
     @staticmethod 
     def getInstance():
         return BOLHelper.getInstance(BOLHelper.__username, BOLHelper.__password)
 
     @staticmethod 
-    def getInstance(username, password):
-        """ Static access method. """
+    def getInstance():
+        return
 
-        if username != "" and password != "":
+
+    @staticmethod 
+    def initInstance(username, password, 
+                     appName, appVersion, 
+                     appType = AppTypes.NotDefined,
+                     language = Languages.NotDefined):
+        """ Static access method. """
+        
+        if username != "" and password != "" and appName != "" and appVersion != "":
             BOLHelper.__Instance()
             BOLHelper.__instance.__username = username
             BOLHelper.__password = password
+            BOLHelper.__instance.__appname = appName
+            BOLHelper.__instance.__appversion = appVersion
+            BOLHelper.__instance.__apptype = appType
+            BOLHelper.__instance.__language = language
             return BOLHelper.__Instance()
         else:
             raise Exception('Username and Password cannot be '' or null!')
+
 
     @staticmethod
     def __Instance():
@@ -59,13 +114,12 @@ class BOLHelper(object):
          BOLHelper.__instance = self
 
     def Send(self, ex):
-        # url = "https://localhost:44342/api/send"
         url = "https://api.bugsonline.biz/api/send"
         headers={'Content-type':'application/json', 'Accept':'application/json'}
 
         b = BOLBug()
-        b.AppName = "main.py"
-        b.AppVersion = "1.0" # ther is no version of a python script
+        # b.AppName = "main.py"
+        # b.AppVersion = "1.0" # ther is no version of a python script
         b.MachineName = socket.gethostname()
         b.ErrNumber = 0 #there is no errnumber in python..
         b.Description = ex

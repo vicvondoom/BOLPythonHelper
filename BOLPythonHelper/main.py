@@ -1,9 +1,12 @@
-from BOLHelper import BOLHelper
+from BOLHelper import AppTypes, BOLHelper, Languages
 
 if __name__ == "__main__":
     i = 0
 
-    bh = BOLHelper.getInstance("demo@demo.com", "cicci0CICCI0_")
+    BOLHelper.initInstance("demo@demo.com", "cicci0CICCI0_",
+                                "main.py", "1.0",
+                                AppTypes.Console, Languages.Python)
+    bh = BOLHelper.getInstance()
 
     try:
         input("Press a key to continue..")
